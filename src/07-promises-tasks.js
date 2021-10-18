@@ -28,8 +28,12 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
+function willYouMarryMe(isPositiveAnswer) {
+  return new Promise((resolve, reject) => {
+    if (isPositiveAnswer === true) return resolve('Hooray!!! She said "Yes"!');
+    if (isPositiveAnswer === false) return resolve('Oh no, she said "No".');
+    return reject(new Error('Wrong parameter is passed! Ask her again.'));
+  });
 }
 
 
@@ -48,8 +52,15 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  return new Promise((resolve, reject) => {
+    if (array.length === 0) return reject(new Error('Incorrect data!'));
+    const arr = [];
+    const errArr = [];
+    array.map((item, idx) => item.then(() => arr.push(idx)).catch((err) => errArr.push(err)));
+    if (errArr.length > 0) return reject(new Error(errArr[0]));
+    return resolve(arr);
+  });
 }
 
 /**
@@ -71,8 +82,9 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
+function getFastestPromise(array) {
+  if (array.length === 0) return new Promise((_, reject) => reject(new Error('Incorrect data!')));
+  return Promise.race(array);
 }
 
 /**
@@ -92,8 +104,19 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+function chainPromises(array, action) {
+  return new Promise((resolve) => {
+    const res = [];
+    const errArr = [];
+    array.map((item, idx) => item.then((result) => {
+      if (idx === 0) {
+        res.push(result);
+        return;
+      }
+      res.push(action(res[idx - 1], result));
+    }).catch((err) => errArr.push(err)));
+    return resolve(res);
+  }).then((result) => result[result.length - 1]);
 }
 
 module.exports = {
