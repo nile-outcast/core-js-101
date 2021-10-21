@@ -285,8 +285,25 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const value = ccn.toString().replace(/\D/g, '');
+
+  let numCheck = 0;
+  let boolEven = false;
+
+  for (let i = value.length - 1; i >= 0; i -= 1) {
+    let numDigit = parseInt(value.charAt(i), 10);
+
+    if (boolEven) {
+      const isMoreNine = (numDigit *= 2) > 9;
+      if (isMoreNine) numDigit -= 9;
+    }
+
+    numCheck += numDigit;
+    boolEven = !boolEven;
+  }
+
+  return (numCheck % 10) === 0;
 }
 
 /**
@@ -303,8 +320,11 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const value = num.toString().split('');
+  const sum = value.reduce((prev, item) => prev + +item, 0);
+  if (sum > 9) return getDigitalRoot(sum);
+  return sum;
 }
 
 
@@ -329,8 +349,44 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const stack = [];
+  for (let i = 0; i < str.length; i += 1) {
+    const x = str[i];
+
+    if (x === '(' || x === '[' || x === '{' || x === '<') {
+      stack.push(x);
+    } else {
+      if (stack.length === 0) return false;
+
+      let check;
+      switch (x) {
+        case ')':
+          check = stack.pop();
+          if (check === '{' || check === '[' || check === '<') return false;
+          break;
+
+        case '}':
+          check = stack.pop();
+          if (check === '(' || check === '[' || check === '<') return false;
+          break;
+
+        case ']':
+          check = stack.pop();
+          if (check === '(' || check === '{' || check === '<') return false;
+          break;
+
+        case '>':
+          check = stack.pop();
+          if (check === '(' || check === '{' || check === '[') return false;
+          break;
+
+        default: return false;
+      }
+    }
+  }
+
+  return (stack.length === 0);
 }
 
 
@@ -354,8 +410,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -371,8 +427,13 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const pathArr = pathes.map((path) => path.split('/'));
+  const elemAtArr = (idx) => (arr) => arr[idx];
+  const rotate = pathArr[0].map((_, idx) => pathArr.map(elemAtArr(idx)));
+  const allElemsEqual = (arr) => arr.every((elem, _, array) => elem === array[0]);
+  if (!allElemsEqual(rotate[0])) return '';
+  return `${rotate.filter(allElemsEqual).map(elemAtArr(0)).join('/')}/`;
 }
 
 
