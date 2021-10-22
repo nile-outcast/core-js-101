@@ -455,8 +455,21 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const arrTable = [];
+  for (let a = 0; a < m1.length; a += 1) {
+    const arrRow = [];
+    for (let b = 0; b < m2[a].length; b += 1) {
+      let sum = 0;
+      for (let c = 0; c < m1[a].length; c += 1) {
+        const multiple = m1[a][c] * m2[c][b];
+        sum += multiple;
+      }
+      arrRow.push(sum);
+    }
+    arrTable.push(arrRow);
+  }
+  return arrTable;
 }
 
 
@@ -490,8 +503,29 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const newArr = position.reduce((prev, item) => {
+    if (item.length < 3) item.push(undefined);
+    prev.push(...item);
+    return prev;
+  }, []);
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i += 1) {
+    const [a, b, c] = lines[i];
+    if (newArr[a] && newArr[a] === newArr[b] && newArr[a] === newArr[c]) {
+      return newArr[a];
+    }
+  }
+  return undefined;
 }
 
 
