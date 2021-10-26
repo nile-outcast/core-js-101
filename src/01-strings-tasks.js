@@ -272,6 +272,7 @@ function encodeToRot13(str) {
  */
 function isString(value) {
   const str = {}.toString.call(value);
+
   return str.includes('String');
 }
 
